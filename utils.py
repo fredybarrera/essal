@@ -69,14 +69,38 @@ def get_params_query(token, offset, record_count):
     return {
         'f': 'json',
         'token': token,
-        'where': '1=1',
+        # 'where': '1=1',
+        'where': 'id_cliente = 792827',
         'outFields': '*',
-        'returnIdsOnly': True,
+        # 'returnIdsOnly': True,
         'orderByFields': 'OBJECTID',
-        'resultOffset': offset,
-        'resultRecordCount': record_count
+        # 'resultOffset': offset,
+        # 'resultRecordCount': record_count
     }
 
+#-------------------------------------------------------------------------------
+# Retorna los adjuntos de una capa a partir del global id
+#-------------------------------------------------------------------------------
+def get_params_attachments(token, global_id):
+    return {
+        'f': 'json',
+        'token': token,
+        'globalIds': global_id,
+        'returnUrl': True
+    }
+
+
+#-------------------------------------------------------------------------------
+# Retorna los params para una consulta de visitas
+#-------------------------------------------------------------------------------
+def get_params_visitas(token, global_id):
+    return {
+        'f': 'json',
+        'token': token,
+        'where': 'GLOBALID_CAMBIOS = \'' + global_id + '\'',
+        'outFields': '*',
+    }
+    
 #-------------------------------------------------------------------------------
 # Convert seconds into hours, minutes and seconds
 #-------------------------------------------------------------------------------

@@ -18,6 +18,10 @@ import json
 import os
 
 script_dir = os.path.dirname(__file__)
+# Workspace
+arcpy.env.workspace = const.WORKSPACE
+# Dataset
+dataset = const.DATASET
 
 #-------------------------------------------------------------------------------
 # Retorna un token de acceso a los servicios
@@ -69,13 +73,14 @@ def get_params_query(token, offset, record_count):
     return {
         'f': 'json',
         'token': token,
-        # 'where': '1=1',
-        'where': 'id_cliente = 792827',
+        'where': '1=1',
+        # 'where': 'id_cliente = 792827',
         'outFields': '*',
         # 'returnIdsOnly': True,
         'orderByFields': 'OBJECTID',
-        # 'resultOffset': offset,
-        # 'resultRecordCount': record_count
+        'resultOffset': offset,
+        'resultRecordCount': record_count,
+        'returnGeometry': True
     }
 
 #-------------------------------------------------------------------------------
@@ -132,6 +137,27 @@ def log(text):
                         traceback.format_exc())
 
 #-------------------------------------------------------------------------------
+# Permite truncar una tabla
+#-------------------------------------------------------------------------------
+def truncate_table(table):
+    """Trunca la informacion de una tabla dentro del dataset."""
+    try:
+        arcpy.AddMessage("Limpiando capa " + table + "...")
+
+        fc = os.path.join(arcpy.env.workspace, dataset, table)
+
+        print('fc: ', fc)
+
+        # Truncate a feature class if it exists
+        if arcpy.Exists(fc):
+            print('existe: ', table)
+            arcpy.TruncateTable_management(fc)
+
+    except:
+        print("Failed truncate_table (%s)" % traceback.format_exc())
+        utils.error_log("Failed truncate_table (%s)" % traceback.format_exc())
+
+#-------------------------------------------------------------------------------
 # Almacena un log de error
 #-------------------------------------------------------------------------------
 def error_log(text):
@@ -140,7 +166,7 @@ def error_log(text):
         log_file = os.path.join(script_dir, 'error-logs.txt')
         f = open(log_file, "a")
         f.write(
-            "{0} -- {1}\n".format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), text))
+            "{0} -- {1}\n".format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), text.encode('utf8')))
         f.write("---------------------------------------------------------------- \n")
         f.close()
     except:

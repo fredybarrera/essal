@@ -1,10 +1,10 @@
-# Script xxxxx
+# Script Essal
 
 Proyecto desarrollado en Python 3.8
 
 ## Propósito
 
-Script que .......
+Script que permite desacargar data desde Arcgis Online y almacenarla en una GDB.
 
 ## Instalación
 
